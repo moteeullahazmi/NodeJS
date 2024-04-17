@@ -9,7 +9,7 @@ app.get('/chicken', function (req, res) {
     res.send('Hello chicken ')
   })
 
-  app.get("/adress", function(req,res){
+  app.post("/idli", function(req,res){
     var adress ={
         name:"Moteeullah Azmi",
         Roll:16,
