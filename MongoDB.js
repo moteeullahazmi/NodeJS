@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const Person = require('./models/empolayee');
+
 const MenuItem = require('./models/MenuItem')
 const db = require('./db')
 
@@ -26,36 +26,18 @@ app.get('/', (req, res) => {
   res.send("Welcome to Home Page");
 });
 
-// Route for creating a new person
-app.post('/person', async (req, res) => {
-  try {
-    const data = req.body;
-    const newPerson = new Person(data);
-
-    // Save the new person to the database
-    const response = await newPerson.save();
-    console.log('Data saved:', response);
-    res.status(200).json(response);
-  } catch(err) {
-    console.log(err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// GET method to get the person
-app.get('/person', async (req,res)=>{
-  try{
-    const data = await Person.find();
-    console.log("data fetched");
-    res.status(200).json(data);
-  }catch(err){
-
-console.log(err);
-    res.status(500).json({ error: 'Internal server error' });
 
 
-  }
-})
+
+// Import router person
+const route = require('./Routes/personRoutes')
+
+// import menu item 
+const menuItemazmi = require('./Routes/menuItemRoutes')
+
+
+app.use("/person",route)
+app.use("/menu", menuItemazmi)
 
 // Start the server
 const PORT = process.env.PORT || 3000;
