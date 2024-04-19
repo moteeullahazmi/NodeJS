@@ -1,44 +1,47 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-require('dotenv').config()
+require('dotenv').config();
+const passport = require('./auth')
 
-
-const MenuItem = require('./models/MenuItem')
-const db = require('./db')
+const Person = require('./models/empolayee');
+const db = require('./db');
 
 const app = express();
 
 // Connect to MongoDB using Mongoose
-
-
-// goose.connect('mongodb://localhost:27017/hot', {
-//   useNewUrlParmonser: true,
-//   useUnifiedTopology: true
-// })
-// .then(() => console.log('MongoDB Connected'))
-// .catch(err => console.log(err));
+mongoose.connect(process.env.MONGO_URL_LOCAL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB Connected'))
+.catch(err => console.error('MongoDB Connection Error:', err));
 
 // Middleware for parsing JSON bodies
 app.use(bodyParser.json());
 
-// Route for home page
-app.get('/', (req, res) => {
+
+
+// Middleware
+const applog = (req, res, next) => {
+  console.log(`[${new Date().toLocaleDateString()}] Request Made to : ${req.originalUrl}`);
+  next();
+};
+app.use(applog);
+
+// Route for home page with authentication
+const localMiddle =passport.authenticate('local', { session: false });
+app.get('/',(req, res) => {
   res.send("Welcome to Home Page");
 });
 
+// Import router for persons
+const route = require('./Routes/personRoutes');
+// Import router for menu items
+const menuItemRoutes = require('./Routes/menuItemRoutes');
 
-
-
-// Import router person
-const route = require('./Routes/personRoutes')
-
-// import menu item 
-const menuItemazmi = require('./Routes/menuItemRoutes')
-
-
-app.use("/person",route)
-app.use("/menu", menuItemazmi)
+app.use("/person", route);
+app.use("/menu",localMiddle, menuItemRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
