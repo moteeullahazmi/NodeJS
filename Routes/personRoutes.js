@@ -19,8 +19,6 @@ route.post('/', async (req, res) => {
     }
   });
 
-  // azmi
-
   // GET method to get the person
 route.get('/', async (req,res)=>{
     try{

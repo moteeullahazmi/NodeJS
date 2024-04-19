@@ -1,27 +1,29 @@
 const mongoose = require("mongoose");
-require('dotenv').config()
+require('dotenv').config();
 
+// Define the MongoDB connection URL
 const mongoURL = process.env.MONGO_URL;
 
+// Setup MongoDB connection
 mongoose.connect(mongoURL, {
-  useNewUrlParser: true, // Use new URL parser
-  useCreateIndex: true, // Use createIndex instead of ensureIndex
-  useFindAndModify: false, // Use findOneAndUpdate instead of findAndModify
-  // Omit useUnifiedTopology as it's deprecated and has no effect
+    useNewUrlParser: true, // Deprecated, but harmless
+    useUnifiedTopology: true // Deprecated, but harmless
 });
 
+// Get the default connection
 const db = mongoose.connection;
 
 db.on('connected', () => {
-  console.log("MongoDB connection Connected");
+    console.log("MongoDB connection Connected");
 });
 
 db.on('error', (err) => {
-  console.error("MongoDB connection Error:", err);
+    console.log("MongoDB connection Error:", err);
 });
 
 db.on('disconnected', () => {
-  console.log("MongoDB connection Disconnected");
+    console.log("MongoDB connection Disconnected");
 });
 
+// Export database 
 module.exports = db;
